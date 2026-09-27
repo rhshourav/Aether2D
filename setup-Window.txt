@@ -5,7 +5,7 @@ First need VS CODE.
 
 
 
-to install GCC Compiler go to  msys2.org download Version 20260611
+to install GCC Compiler go to  msys2.org download Version 20260611 or download from release.
 
 [
 	Then use the Msys2 to install gcc : pacman -S mingw-w64-ucrt-x86_64-toolchain
