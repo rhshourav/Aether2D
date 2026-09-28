@@ -34,10 +34,10 @@ The primary goal of Aether2D is not just to make a game, but to understand the u
 
 ## 🚀 Getting Started (Windows)
 To compile Aether2D using a MinGW-w64 toolchain, run the following command in the terminal:
-\`\`\`bash
+```bash
 g++ main.cpp -o engine.exe -lmingw32 -lSDL2main -lSDL2
-\`\`\`
+```
 Then run the executable:
-\`\`\`bash
+```bash
 .\engine.exe
-\`\`\`
+```
