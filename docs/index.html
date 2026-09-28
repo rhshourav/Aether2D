@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aether2D — A data-driven C++ 2D game engine</title>
+<meta name="description" content="Aether2D is a data-driven 2D game engine written in modern C++, built around an Entity Component System and a cache-friendly memory model.">
+
+<meta property="og:title" content="Aether2D — A data-driven C++ 2D game engine">
+<meta property="og:description" content="An ECS-based 2D game engine written from scratch in modern C++.">
+<meta property="og:type" content="website">
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%234deaff'/%3E%3Cstop offset='1' stop-color='%23a855f7'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='50' cy='50' r='38' fill='url(%23g)'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="container">
+    <a href="#top" class="nav-brand">
+      <span class="nav-brand-mark" aria-hidden="true"></span>
+      Aether2D
+    </a>
+    <div class="nav-links" id="navLinks">
+      <a class="nav-link" href="#architecture">Architecture</a>
+      <a class="nav-link" href="#roadmap">Roadmap</a>
+      <a class="nav-cta" href="https://github.com/rhshourav/Aether2D" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<main>
+
+  <header class="hero" id="top">
+    <canvas class="hero-canvas" id="heroCanvas" aria-hidden="true"></canvas>
+    <div class="container">
+      <div class="hero-inner">
+        <h1 class="hero-title">Aether2D</h1>
+        <p class="hero-tagline">
+          <span id="typedText" data-text="A data-driven C++ 2D Game Engine."></span><span class="cursor" aria-hidden="true"></span>
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="https://github.com/rhshourav/Aether2D" target="_blank" rel="noopener">View on GitHub</a>
+          <a class="btn btn-ghost" href="#architecture">Read the architecture</a>
+        </div>
+        <div class="hero-meta">
+          <div><strong>C++20</strong>Language</div>
+          <div><strong>ECS</strong>Architecture</div>
+          <div><strong>Custom</strong>Memory model</div>
+        </div>
+      </div>
+    </div>
+    <div class="scroll-cue" aria-hidden="true">
+      <span class="scroll-cue-line"></span>
+      Scroll
+    </div>
+  </header>
+
+  <section class="section architecture" id="architecture">
+    <div class="container">
+      <h2 class="section-title reveal">How it's built</h2>
+      <p class="section-intro reveal">
+        Aether2D is built around two decisions made early and kept consistent everywhere else in the
+        engine: game objects are composed, not inherited, and their data lives in memory the way the
+        CPU actually wants to read it.
+      </p>
+
+      <div class="arch-grid">
+        <div class="arch-panel arch-panel--cyan reveal">
+          <h3>Entity Component System</h3>
+          <p>
+            An entity in Aether2D is nothing more than an ID. Everything a game object needs — a
+            position, a sprite, a velocity — is stored as a plain component, and systems are the only
+            place behaviour lives, each one operating over every entity that has the components it cares
+            about.
+          </p>
+          <p>
+            This keeps a <code>Transform</code> from ever needing to know a <code>Sprite</code> exists,
+            and lets new gameplay features get added as new components and systems, rather than new
+            branches in a growing inheritance tree.
+          </p>
+
+          <div class="arch-diagram">
+            <svg viewBox="0 0 460 170" role="img" aria-label="Diagram showing an entity connected to Transform, Sprite and Velocity components, which feed into a Render System">
+              <line class="diagram-line" x1="100" y1="85" x2="168" y2="25"></line>
+              <line class="diagram-line" x1="100" y1="85" x2="168" y2="85"></line>
+              <line class="diagram-line" x1="100" y1="85" x2="168" y2="145"></line>
+              <line class="diagram-line" x1="278" y1="25" x2="340" y2="75"></line>
+              <line class="diagram-line" x1="278" y1="85" x2="340" y2="85"></line>
+              <line class="diagram-line" x1="278" y1="145" x2="340" y2="95"></line>
+
+              <rect class="diagram-node-fill diagram-node-stroke" x="10" y="65" width="90" height="40" rx="8"></rect>
+              <text class="diagram-text diagram-text--strong" x="55" y="90" text-anchor="middle">Entity 42</text>
+
+              <rect class="diagram-node-fill diagram-node-stroke" x="168" y="8" width="110" height="34" rx="8"></rect>
+              <text class="diagram-text" x="223" y="30" text-anchor="middle">Transform</text>
+              <rect class="diagram-node-fill diagram-node-stroke" x="168" y="68" width="110" height="34" rx="8"></rect>
+              <text class="diagram-text" x="223" y="90" text-anchor="middle">Sprite</text>
+              <rect class="diagram-node-fill diagram-node-stroke" x="168" y="128" width="110" height="34" rx="8"></rect>
+              <text class="diagram-text" x="223" y="150" text-anchor="middle">Velocity</text>
+
+              <rect class="diagram-node-fill" x="340" y="60" width="110" height="50" rx="8" stroke="#4deaff" stroke-width="1.5"></rect>
+              <text class="diagram-text diagram-text--cyan" x="395" y="82" text-anchor="middle">RenderSystem</text>
+              <text class="diagram-text" x="395" y="98" text-anchor="middle" font-size="9">reads Transform + Sprite</text>
+            </svg>
+          </div>
+        </div>
+
+        <div class="arch-panel arch-panel--violet reveal">
+          <h3>Memory-first design</h3>
+          <p>
+            Components of the same type are stored together in tightly packed arrays, not scattered
+            across individually allocated objects. Iterating every <code>Transform</code> in the game
+            means walking one contiguous block of memory, which is exactly what the CPU cache is built
+            for.
+          </p>
+          <p>
+            Frequent allocations are routed through custom pool and arena allocators instead of the
+            general-purpose heap, trading a little upfront bookkeeping for predictable frame times and
+            far less allocator overhead during gameplay.
+          </p>
+
+          <div class="arch-diagram">
+            <div class="mem-row">
+              <span class="mem-row-label">Typical heap allocation — one object, one pointer, wherever the heap finds room</span>
+              <div class="mem-blocks is-scattered" aria-hidden="true">
+                <div class="mem-block"></div><div class="mem-block"></div>
+                <div class="mem-block"></div><div class="mem-block"></div>
+              </div>
+            </div>
+            <div class="mem-row">
+              <span class="mem-row-label">Aether2D component storage — packed, contiguous, cache-friendly</span>
+              <div class="mem-blocks is-packed" aria-hidden="true">
+                <div class="mem-block"></div><div class="mem-block"></div><div class="mem-block"></div>
+                <div class="mem-block"></div><div class="mem-block"></div><div class="mem-block"></div>
+                <div class="mem-block"></div><div class="mem-block"></div><div class="mem-block"></div>
+                <div class="mem-block"></div><div class="mem-block"></div><div class="mem-block"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="roadmap">
+    <div class="container">
+      <h2 class="section-title reveal">Roadmap</h2>
+      <p class="section-intro reveal">
+        Aether2D is being built in five deliberate stages, starting from a bare window and ending at a
+        2D physics-driven engine loop.
+      </p>
+
+      <ol class="timeline">
+        <li class="timeline-item reveal" data-status="done">
+          <span class="timeline-marker">01</span>
+          <div class="timeline-content">
+            <span class="timeline-status">Complete</span>
+            <h3>Setup</h3>
+            <p>CMake-based build pipeline, a windowing and rendering context, and a logging layer for everything else to build on.</p>
+          </div>
+        </li>
+        <li class="timeline-item reveal" data-status="done">
+          <span class="timeline-marker">02</span>
+          <div class="timeline-content">
+            <span class="timeline-status">Complete</span>
+            <h3>Game Loop</h3>
+            <p>A fixed-timestep update loop with frame pacing and interpolation, so gameplay stays stable independent of render frame rate.</p>
+          </div>
+        </li>
+        <li class="timeline-item reveal" data-status="active">
+          <span class="timeline-marker">03</span>
+          <div class="timeline-content">
+            <span class="timeline-status">In progress</span>
+            <h3>Asset Manager</h3>
+            <p>Reference-counted loading for textures and audio, a shared resource cache, and hot-reloading during development.</p>
+          </div>
+        </li>
+        <li class="timeline-item reveal" data-status="planned">
+          <span class="timeline-marker">04</span>
+          <div class="timeline-content">
+            <span class="timeline-status">Planned</span>
+            <h3>ECS</h3>
+            <p>Archetype-based component storage and a system scheduler, replacing the current placeholder object model.</p>
+          </div>
+        </li>
+        <li class="timeline-item reveal" data-status="planned">
+          <span class="timeline-marker">05</span>
+          <div class="timeline-content">
+            <span class="timeline-status">Planned</span>
+            <h3>Physics</h3>
+            <p>2D broad and narrow-phase collision detection with simple rigid body integration, built directly on top of the ECS.</p>
+          </div>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <span class="footer-text">© <span id="year"></span> rhshourav. Aether2D is built in the open.</span>
+    <a class="footer-link" href="https://github.com/rhshourav" target="_blank" rel="noopener">
+      <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+        <path d="M8 0C3.58 0 0 3.58 0 8a8 8 0 0 0 5.47 7.59c.4.07.55-.17.55-.38
+        0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
+        -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07
+        -1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12
+        0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12
+        .51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48
+        0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/>
+      </svg>
+      github.com/rhshourav
+    </a>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Nav background on scroll */
+  var nav = document.getElementById('nav');
+  function onScroll() {
+    nav.classList.toggle('is-scrolled', window.scrollY > 12);
+  }
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  /* Mobile nav toggle */
+  var toggle = document.getElementById('navToggle');
+  var navLinksEl = document.getElementById('navLinks');
+  toggle.addEventListener('click', function () {
+    var open = navLinksEl.classList.toggle('is-open');
+    toggle.classList.toggle('is-open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+  });
+  navLinksEl.querySelectorAll('a').forEach(function (a) {
+    a.addEventListener('click', function () {
+      navLinksEl.classList.remove('is-open');
+      toggle.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  /* Scroll-triggered reveal */
+  var revealEls = document.querySelectorAll('.reveal');
+  if (reduceMotion || !('IntersectionObserver' in window)) {
+    revealEls.forEach(function (el) { el.classList.add('is-visible'); });
+  } else {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+    revealEls.forEach(function (el) { io.observe(el); });
+  }
+
+  /* Active nav link tracking */
+  var sections = document.querySelectorAll('main section[id]');
+  var navLinkEls = document.querySelectorAll('.nav-link');
+  if ('IntersectionObserver' in window && sections.length) {
+    var navObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var link = document.querySelector('.nav-link[href="#' + entry.target.id + '"]');
+        if (!link) return;
+        if (entry.isIntersecting) {
+          navLinkEls.forEach(function (l) { l.classList.remove('is-active'); });
+          link.classList.add('is-active');
+        }
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    sections.forEach(function (s) { navObserver.observe(s); });
+  }
+
+  /* Typing effect for the hero tagline */
+  var typedEl = document.getElementById('typedText');
+  if (typedEl) {
+    var fullText = typedEl.getAttribute('data-text') || '';
+    if (reduceMotion) {
+      typedEl.textContent = fullText;
+    } else {
+      typedEl.textContent = '';
+      var i = 0;
+      (function type() {
+        if (i <= fullText.length) {
+          typedEl.textContent = fullText.slice(0, i);
+          i++;
+          setTimeout(type, 38);
+        }
+      })();
+    }
+  }
+
+  /* Footer year */
+  var yearEl = document.getElementById('year');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
+
+  /* Hero constellation canvas */
+  var canvas = document.getElementById('heroCanvas');
+  if (canvas && !reduceMotion) {
+    var ctx = canvas.getContext('2d');
+    var hero = document.getElementById('top');
+    var w, h, dpr, points = [], running = true;
+    var mouse = { x: null, y: null };
+
+    function resize() {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      w = hero.clientWidth;
+      h = hero.clientHeight;
+      canvas.width = w * dpr;
+      canvas.height = h * dpr;
+      canvas.style.width = w + 'px';
+      canvas.style.height = h + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      var count = Math.min(70, Math.floor((w * h) / 18000));
+      points = [];
+      for (var k = 0; k < count; k++) {
+        points.push({
+          x: Math.random() * w,
+          y: Math.random() * h,
+          vx: (Math.random() - 0.5) * 0.25,
+          vy: (Math.random() - 0.5) * 0.25
+        });
+      }
+    }
+
+    function step() {
+      if (!running) return;
+      ctx.clearRect(0, 0, w, h);
+      var linkDist = 130;
+
+      points.forEach(function (p) {
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0 || p.x > w) p.vx *= -1;
+        if (p.y < 0 || p.y > h) p.vy *= -1;
+      });
+
+      for (var i = 0; i < points.length; i++) {
+        for (var j = i + 1; j < points.length; j++) {
+          var a = points[i], b = points[j];
+          var d = Math.hypot(a.x - b.x, a.y - b.y);
+          if (d < linkDist) {
+            ctx.strokeStyle = 'rgba(120, 170, 220, ' + (0.12 * (1 - d / linkDist)) + ')';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(a.x, a.y);
+            ctx.lineTo(b.x, b.y);
+            ctx.stroke();
+          }
+        }
+        if (mouse.x !== null) {
+          var dm = Math.hypot(points[i].x - mouse.x, points[i].y - mouse.y);
+          if (dm < 160) {
+            ctx.strokeStyle = 'rgba(77, 234, 255, ' + (0.35 * (1 - dm / 160)) + ')';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(points[i].x, points[i].y);
+            ctx.lineTo(mouse.x, mouse.y);
+            ctx.stroke();
+          }
+        }
+      }
+
+      points.forEach(function (p) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 1.6, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(200, 220, 255, 0.5)';
+        ctx.fill();
+      });
+
+      requestAnimationFrame(step);
+    }
+
+    resize();
+    requestAnimationFrame(step);
+    window.addEventListener('resize', resize);
+    hero.addEventListener('mousemove', function (e) {
+      var rect = hero.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    });
+    hero.addEventListener('mouseleave', function () { mouse.x = null; mouse.y = null; });
+    document.addEventListener('visibilitychange', function () {
+      running = !document.hidden;
+      if (running) requestAnimationFrame(step);
+    });
+  }
+})();
+</script>
+
+</body>
+</html>
